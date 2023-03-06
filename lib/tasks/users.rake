@@ -8,4 +8,14 @@ namespace :users do
     end
     puts 'Done'
   end
+
+  desc "Enrich a given user with Clearbit (sync)"
+  task :update, [:user_id] => :environment do |t, args|
+    user = User.find(args[:user_id])
+    puts "Enriching #{user.email}..."
+    UpdateUserJob.perform_later(user.id)
+    # rake task will return when job is _done_
+    puts 'Done'
+  end
+
 end
